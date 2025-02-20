@@ -44,33 +44,47 @@
 
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h4>Forgot Password</h4>
+                                <h4>Reset Password</h4>
                             </div>
 
                             <div class="card-body">
-                                <p class="text-muted">Forgot your password? No problem.We got you.</p>
-                                @if (session()->has('success'))
-                                    <br>
-                                    <i><b style="color: green">{{ session()->get('success') }}</b></i>
-                                @endif
-                                <form method="POST" action="{{ route('admin.forgot-password.send-link') }}">
+                                <form method="POST" action="{{ route('admin.reset-password-send') }}">
                                     @csrf
+
+                                    <input type="hidden" name="token" value="{{ request()->token }}">
+
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input id="email" type="email" class="form-control" name="email"
-                                            tabindex="1" autofocus required>
+                                            value="{{ request()->email }}" required>
+                                        @error('email')
+                                            <code>{{ $message }}</code>
+                                        @enderror
                                     </div>
-
-                                    @error('email')
-                                        <code>{{ $message }}</code>
-                                    @enderror
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-                                            Send New Link
-                                        </button>
+                                        <label for="password">New Password</label>
+                                        <input id="password" type="password" class="form-control" name="password"
+                                            required>
+                                        @error('password')
+                                            <code>{{ $message }}</code>
+                                        @enderror
                                     </div>
+
+                                    <div class="form-group">
+                                        <label for="password_confirmation">Confirm Password</label>
+                                        <input id="password_confirmation" type="password" class="form-control"
+                                            name="password_confirmation" required>
+                                        @error('password_confirmation')
+                                            <code>{{ $message }}</code>
+                                        @enderror
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                        Set New Password
+                                    </button>
                                 </form>
+
                             </div>
                         </div>
                         <div class="simple-footer">
