@@ -46,10 +46,13 @@
 
                         <div class="card card-primary">
                             <div class="card-header">
-                                <h4>Login</h4>
+                                <h4>{{ __('admin.Login') }}</h4>
                             </div>
 
                             <div class="card-body">
+                                @if (session()->has('success'))
+                                    <i><b style="color:green">{{ session()->get('success') }}</b></i>
+                                @endif
                                 <form method="POST" action="{{ route('admin.handle-login') }}"
                                     class="needs-validation">
                                     @csrf
@@ -67,7 +70,7 @@
                                         <div class="d-block">
                                             <label for="password" class="control-label">Password</label>
                                             <div class="float-right">
-                                                <a href="auth-forgot-password.html" class="text-small">
+                                                <a href="{{ route('admin.forgot-password') }}" class="text-small">
                                                     Forgot Password?
                                                 </a>
                                             </div>
