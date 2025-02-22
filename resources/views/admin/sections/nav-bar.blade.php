@@ -38,8 +38,10 @@
         </li>
         <li class="dropdown"><a href="#" data-toggle="dropdown"
                 class="nav-link dropdown-toggle nav-link-lg nav-link-user">
-                <img alt="image" src="assets/img/avatar/avatar-1.png" class="rounded-circle mr-1">
-                <div class="d-sm-none d-lg-inline-block">Hi, {{ Auth::guard('admin')->user()->name }}</div>
+                <img alt="image"
+                    src="{{ Auth::guard('admin')->user()->image ? asset(Auth::guard('admin')->user()->image) : asset('default-profile.png') }}"
+                    class="rounded-circle mr-1">
+                <div class="d-sm-none d-lg-inline-block">{{ Auth::guard('admin')->user()->name }}</div>
 
 
             </a>
