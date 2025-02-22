@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminAuthenticationController;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,7 @@ Route::post('reset-password/send', [AdminAuthenticationController::class, 'hande
 Route::group(['middleware' => ['admin']], function () {
   Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
 });
+
+// Profile Page
+Route::get('profile', [DashboardController::class, 'index'])->name('dashboard.profile.index');
+Route::post('profile/update/{id}', [DashboardController::class, 'profileUpdate'])->name('dashboard.profile.update');
