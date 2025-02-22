@@ -20,91 +20,91 @@
 
                     <div class="col-12 col-md-6">
                         <div class="card">
-                            <form method="post"
-                                action="{{ route('admin.dashboard.profile.update', auth()->guard('admin')->user()->id) }}"
-                                class="needs-validation" enctype="multipart/form-data">
+                            <form id="profileForm" enctype="multipart/form-data">
                                 @csrf
-                                @method('PUT')
+
                                 <div class="card-header">
                                     <h4>{{ __('Edit Profile') }}</h4>
                                 </div>
-                                <div class="card-body">
 
+                                <div class="card-body">
+                                    <!-- Image Upload -->
                                     <div id="image-preview" class="image-preview ml-4 mb-4"
                                         style="width:200px; height:193px">
                                         <label for="image-upload" id="image-label">{{ __('Choose Image') }}</label>
-                                        <input type="file" name="image" id="image-upload">
-                                        @error('image')
-                                            <p class="invalid-feedback">{{ $message }}</p>
-                                        @enderror
+                                        <input type="file" name="image" id="image-upload" class="form-control">
+                                        <input type="hidden" name="old_image" class="form-control"
+                                            value="{{ $user->image }}">
+
                                     </div>
-                                    <div class="form-group  col-12">
+
+                                    <!-- Name Input -->
+                                    <div class="form-group col-12">
                                         <label>{{ __('Name') }}</label>
-                                        <input type="text" class="form-control" value="{{ $user->name }}"
-                                            name="name">
-                                        <div class="invalid-feedback">
-                                            {{ __('Please fill in the name') }}
-                                        </div>
-                                        @error('name')
-                                            <p class="invalid-feedback">{{ $message }}</p>
-                                        @enderror
+                                        <input type="text" class="form-control" name="name"
+                                            value="{{ old('name', $user->name) }}">
+
                                     </div>
-                                    <div class="form-group  col-12">
+
+                                    <!-- Email Input -->
+                                    <div class="form-group col-12">
                                         <label>{{ __('Email') }}</label>
-                                        <input type="email" class="form-control" value="{{ $user->email }}"
-                                            name="email">
-                                        <div class="invalid-feedback">
-                                            '{{ __('Please fill in the email') }}'
-                                        </div>
-                                        @error('email')
-                                            <p class="invalid-feedback">{{ $message }}</p>
-                                        @enderror
+                                        <input type="email" class="form-control" name="email"
+                                            value="{{ old('email', $user->email) }}">
+
                                     </div>
-
-
                                 </div>
+
                                 <div class="card-footer text-right">
-                                    <button class="btn btn-primary">{{ __('Save Changes') }}</button>
+                                    <button type="submit" id="saveBtn" class="btn btn-primary">
+                                        <span class="spinner-border spinner-border-sm d-none" id="loadingSpinner"></span>
+                                        {{ __('Save Changes') }}
+                                    </button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                     <div class="col-12 col-md-6">
                         <div class="card">
-                            <form method="post" class="needs-validation" novalidate="">
+                            <form id="passwordForm">
+                                @csrf
                                 <div class="card-header">
                                     <h4>{{ __('Update Password') }}</h4>
                                 </div>
                                 <div class="card-body">
-
-                                    <div class="form-group  col-12">
+                                    <!-- Old Password -->
+                                    <div class="form-group col-12">
                                         <label>{{ __('Old Password') }}</label>
-                                        <input type="text" class="form-control" value="" required>
-                                        <div class="invalid-feedback">
-                                            {{ __('Please fill in the name') }}
-                                        </div>
+                                        <input type="password" class="form-control update-password" name="old_password">
+
                                     </div>
-                                    <div class="form-group  col-12">
+
+                                    <!-- New Password -->
+                                    <div class="form-group col-12">
                                         <label>{{ __('New Password') }}</label>
-                                        <input type="email" class="form-control" value="" name="password">
-                                        <div class="invalid-feedback">
-                                            '{{ __('Please fill in the email') }}'
-                                        </div>
-                                    </div>
-                                    <div class="form-group  col-12">
-                                        <label>{{ __('Confirmed Password') }}</label>
-                                        <input type="email" class="form-control" value="">
-                                        <div class="invalid-feedback">
-                                            '{{ __('Please fill in the email') }}'
-                                        </div>
+                                        <input type="password" class="form-control update-password" name="password">
+
                                     </div>
 
+                                    <!-- Confirm Password -->
+                                    <div class="form-group col-12">
+                                        <label>{{ __('Confirm Password') }}</label>
+                                        <input type="password" class="form-control update-password"
+                                            name="password_confirmation">
 
+                                    </div>
                                 </div>
+
                                 <div class="card-footer text-right">
-                                    <button class="btn btn-primary">{{ __('Save Changes') }}</button>
+                                    <button type="submit" id="savePasswordBtn" class="btn btn-primary">
+                                        <span class="spinner-border spinner-border-sm d-none"
+                                            id="passwordLoadingSpinner"></span>
+                                        {{ __('Save Changes') }}
+                                    </button>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -112,3 +112,7 @@
         </section>
     </div>
 @endsection
+
+@push('scripts')
+    @include('admin.profile.profile-js');
+@endpush

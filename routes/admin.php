@@ -18,10 +18,12 @@ Route::post('forgot-password', [AdminAuthenticationController::class, 'sendReset
 Route::get('reset-password/{token}', [AdminAuthenticationController::class, 'resetPassword'])->name('reset-password');
 Route::post('reset-password/send', [AdminAuthenticationController::class, 'handelRequestPassword'])->name('reset-password-send');
 
+// Admin All Routes
 Route::group(['middleware' => ['admin']], function () {
   Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
+  Route::get('profile', [DashboardController::class, 'index'])->name('dashboard.profile.index');
+  Route::post('profile/update/{id}', [DashboardController::class, 'profileUpdate'])->name('dashboard.profile.update');
+  Route::post('password/update/{id}', [DashboardController::class, 'passwordUpdate'])->name('dashboard.password.update');
 });
 
 // Profile Page
-Route::get('profile', [DashboardController::class, 'index'])->name('dashboard.profile.index');
-Route::post('profile/update/{id}', [DashboardController::class, 'profileUpdate'])->name('dashboard.profile.update');
