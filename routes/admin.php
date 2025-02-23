@@ -3,6 +3,7 @@
 use App\Http\Controllers\Backend\AdminAuthenticationController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\HomeController;
+use App\Http\Controllers\Backend\LanguageController;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/dashboard', function () {
@@ -24,6 +25,8 @@ Route::group(['middleware' => ['admin']], function () {
   Route::get('profile', [DashboardController::class, 'index'])->name('dashboard.profile.index');
   Route::post('profile/update/{id}', [DashboardController::class, 'profileUpdate'])->name('dashboard.profile.update');
   Route::post('password/update/{id}', [DashboardController::class, 'passwordUpdate'])->name('dashboard.password.update');
+  // Languages
+  Route::resource('languages', LanguageController::class);
 });
 
 // Profile Page
