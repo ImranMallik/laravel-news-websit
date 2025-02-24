@@ -17,9 +17,14 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <p>write something here</p>
+                    {{-- <p>write something here</p> --}}
+                    {{ $dataTable->table(['class' => 'table table-bordered']) }}
                 </div>
             </div>
     </div>
     </section>
 @endsection
+
+@push('scripts')
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+@endpush

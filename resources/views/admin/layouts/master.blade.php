@@ -24,6 +24,11 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('backend/assets/modules/select2/dist/css/select2.css') }}">
+    {{-- For DataTable --}}
+    <link rel="stylesheet" href="//cdn.datatables.net/2.0.3/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.3/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
 
     <!-- Start GA -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-94034622-3"></script>
@@ -77,8 +82,75 @@
     <script src="{{ asset('backend/assets/js/scripts.js') }}"></script>
     <script src="{{ asset('backend/assets/js/custom.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="//cdn.datatables.net/2.0.3/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.3/js/dataTables.bootstrap5.js"></script>
 
     <script src="{{ asset('backend/assets/modules/select2/dist/js/select2.full.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $(document).ready(function() {
+                $('body').on('click', '.delete-item', function(event) {
+                    event.preventDefault();
+
+                    let deleteUrl = $(this).attr('href');
+
+                    Swal.fire({
+                        title: "Are you sure?",
+                        text: "You won't be able to revert this!",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#28a745",
+                        cancelButtonColor: "#dc3545",
+                        confirmButtonText: "Yes, delete it!",
+                        cancelButtonText: "Cancel"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                type: 'DELETE',
+                                url: deleteUrl,
+                                data: {
+                                    _token: $('meta[name="csrf-token"]').attr(
+                                        'content')
+                                }, // Include CSRF token
+                                success: function(response) {
+                                    if (response.status === 'success') {
+                                        Swal.fire({
+                                            title: 'Deleted!',
+                                            text: response.message,
+                                            icon: 'success'
+                                        }).then(() => {
+                                            $('table').DataTable().ajax
+                                                .reload(null,
+                                                    false
+                                                ); // Reload table without refresh
+                                        });
+                                    } else if (response.status === 'error') {
+                                        Swal.fire({
+                                            title: 'Cannot Delete',
+                                            text: response.message,
+                                            icon: 'error'
+                                        });
+                                    }
+                                },
+                                error: function(xhr) {
+                                    let errorMessage = xhr.responseJSON
+                                        ?.message || "Something went wrong!";
+                                    Swal.fire({
+                                        title: 'Error!',
+                                        text: errorMessage,
+                                        icon: 'error'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+        })
+    </script>
 
     <script>
         @if ($errors->any())

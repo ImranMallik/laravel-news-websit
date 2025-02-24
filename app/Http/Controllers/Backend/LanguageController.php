@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\DataTables\LanguageDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminLanguageStoreRequest;
 use App\Models\Language;
@@ -12,9 +13,10 @@ class LanguageController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(LanguageDataTable $dataTable)
     {
-        return view('admin.languages.index');
+        return $dataTable->render('admin.languages.index');
+        // return view('admin.languages.index');
     }
 
     /**
@@ -74,6 +76,21 @@ class LanguageController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $language = Language::findOrFail($id);
+            if ($language->language === 'en') {
+                return response(['status' => 'error', 'message' => __('Can\'t Delete This One')]);
+            }
+            $language->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Language deleted successfully!')
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 'error',
+                'message' => __('Failed to delete language!')
+            ]);
+        }
     }
 }

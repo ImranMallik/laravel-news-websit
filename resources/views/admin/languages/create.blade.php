@@ -101,7 +101,7 @@
                     success: function(response) {
                         if (response.success) {
                             toastr.success(response.message);
-
+                            $('table').DataTable().ajax.reload(null, false);
                             setTimeout(function() {
                                 window.location.href =
                                     "{{ route('admin.languages.index') }}";
