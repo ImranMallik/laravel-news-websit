@@ -4,12 +4,12 @@
     <div class="main-content">
         <section class="section">
             <div class="section-header">
-                <h1>Language</h1>
+                <h1>{{ __('Language') }}</h1>
             </div>
 
             <div class="card card-primary">
                 <div class="card-header">
-                    <h4>Create Language</h4>
+                    <h4>{{ __('Create Language') }}</h4>
 
                 </div>
                 <div class="card-body">
@@ -17,7 +17,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <label for="">Language</label>
+                            <label for="">{{ __('Language') }}</label>
                             <select name="language" id="language-select" class="form-control select2">
                                 <option value="">--Select--</option>
                                 @foreach (config('language') as $key => $lang)
@@ -27,32 +27,32 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="">Name</label>
+                            <label for="">{{ __('Name') }}</label>
                             <input name="name" type="text" readonly id="name" class="form-control">
                         </div>
 
                         <div class="form-group">
-                            <label for="">Slug</label>
+                            <label for="">{{ __('Slug') }}</label>
                             <input name="slug" type="text" readonly id="slug" class="form-control">
                         </div>
 
                         <div class="form-group">
-                            <label for="">Is it default?</label>
+                            <label for="">{{ __('Is it default?') }}</label>
                             <select name="default" class="form-control">
-                                <option value="1">Yes</option>
-                                <option value="0">No</option>
+                                <option value="1">{{ __('Yes') }}</option>
+                                <option value="0">{{ __('No') }}</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label for="">Status</label>
+                            <label for="">{{ __('Status') }}</label>
                             <select name="status" class="form-control">
-                                <option value="1">Active</option>
-                                <option value="0">Inactive</option>
+                                <option value="1">{{ __('Active') }}</option>
+                                <option value="0">{{ __('Inactive') }}</option>
                             </select>
                         </div>
 
-                        <button type="submit" id="submitBtn" class="btn btn-primary">Create</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary">{{ __('Create') }}</button>
                     </form>
 
                 </div>
@@ -62,65 +62,5 @@
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function() {
-            $('#language-select').on('change', function() {
-                let value = $(this).val();
-                let name = $(this).children(':selected').text();
-                $('#slug').val(value);
-                $('#name').val(name);
-            })
-
-            // Ajax For Store Data
-            $('#languageForm').on('submit', function(e) {
-                e.preventDefault(); // Prevent default form submission
-
-                let form = $(this);
-                let formData = form.serialize();
-                let submitBtn = $('#submitBtn');
-
-                let hasError = false;
-                form.find('input, select').each(function() {
-                    if ($(this).val() === '') {
-                        hasError = true;
-                        let fieldLabel = $(this).prev('label').text();
-                        toastr.error(fieldLabel + ' is required');
-                    }
-                });
-
-                if (hasError) return;
-
-
-                submitBtn.prop('disabled', true).text('Creating...');
-
-                $.ajax({
-                    url: "{{ route('admin.languages.store') }}",
-                    type: "POST",
-                    data: formData,
-                    dataType: "json",
-                    success: function(response) {
-                        if (response.success) {
-                            toastr.success(response.message);
-                            $('table').DataTable().ajax.reload(null, false);
-                            setTimeout(function() {
-                                window.location.href =
-                                    "{{ route('admin.languages.index') }}";
-                            }, 2000);
-                        } else {
-                            toastr.error(response.message);
-                        }
-                        submitBtn.prop('disabled', false).text('Create');
-                    },
-                    error: function(xhr) {
-                        let errors = xhr.responseJSON.errors;
-                        $.each(errors, function(key, value) {
-                            toastr.error(value[0]);
-                        });
-                        submitBtn.prop('disabled', false).text('Create');
-                    }
-                });
-            });
-
-        });
-    </script>
+    @include('admin.languages.create-language-js');
 @endpush

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\DataTables\LanguageDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminLanguageStoreRequest;
+use App\Http\Requests\AdminLanguageUpdateRequest;
 use App\Models\Language;
 use Illuminate\Http\Request;
 
@@ -42,7 +43,7 @@ class LanguageController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Language created successfully!',
+            'message' => __('Language created successfully!'),
             'data' => $language
         ]);
     }
@@ -60,16 +61,54 @@ class LanguageController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $edit_data = Language::findOrFail($id);
+        $languages = config('language');
+        return view('admin.languages.edit', compact('edit_data', 'languages'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AdminLanguageUpdateRequest $request, string $id)
     {
-        //
+        try {
+            $language = Language::findOrFail($id);
+
+            // Check if the language already exists
+            $exists = Language::where('language', $request->language)
+                ->where('id', '!=', $id)
+                ->exists();
+
+            if ($exists) {
+                return response()->json(['status' => 'error', 'message' => 'The selected language already exists.'], 422);
+            }
+
+
+
+            // Check if the slug already exists
+            $slugExists = Language::where('slug', $request->slug)
+                ->where('id', '!=', $id)
+                ->exists();
+
+            if ($slugExists) {
+                return response()->json(['status' => 'error', 'message' => 'The selected slug is already in use.'], 422);
+            }
+
+            // If validation passes, update the record
+            $language->update([
+                'language' => $request->language,
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'status' => $request->status,
+                'is_default' => $request->default,
+            ]);
+
+            return response()->json(['status' => 'success', 'message' => 'Language updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Something went wrong. Please try again.'], 500);
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
