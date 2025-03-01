@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\AdminAuthenticationController;
+use App\Http\Controllers\Backend\CategoryController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\HomeController;
 use App\Http\Controllers\Backend\LanguageController;
@@ -27,6 +28,9 @@ Route::group(['middleware' => ['admin']], function () {
   Route::post('password/update/{id}', [DashboardController::class, 'passwordUpdate'])->name('dashboard.password.update');
   // Languages
   Route::resource('languages', LanguageController::class);
+
+  // Category 
+  Route::resource('category', CategoryController::class);
 });
 
 // Profile Page
