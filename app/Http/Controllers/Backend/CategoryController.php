@@ -72,7 +72,7 @@ class CategoryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        //    
     }
 
     /**
@@ -80,7 +80,9 @@ class CategoryController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        $language = Language::all();
+        return view('admin.category.edit', compact('category', 'language'));
     }
 
     /**
@@ -88,7 +90,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        dd($request->all());
     }
 
     /**
