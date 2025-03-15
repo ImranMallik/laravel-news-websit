@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\DataTables\CategoryDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminCategoryCreateRequest;
+use App\Http\Requests\AdminCategoryUpdateRequest;
 use App\Models\Category;
 use App\Models\Language;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        $language = Language::all();
+        $language = Language::where('status', 1)->get();
         return view('admin.category.create', compact('language'));
     }
 
@@ -88,9 +89,21 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(AdminCategoryUpdateRequest $request, string $id)
     {
-        dd($request->all());
+        // dd($request->all());
+        $category = Category::findOrFail($id);
+        $category->name = $request->name;
+        $category->slug = Str::slug($request->name);
+        $category->language = $request->language;
+        $category->show_at_nav = $request->show_at_nav;
+        $category->status = $request->status;
+        $category->save();
+        // return redirect()->route('admin.category.index')->with('success', __('Category updated successfully!'));
+        return response()->json([
+            'success' => true,
+            'message' => __('Category Updated successfully!'),
+        ]);
     }
 
     /**
@@ -98,6 +111,21 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $language = Category::findOrFail($id);
+            if ($language->language === 'en') {
+                return response(['status' => 'error', 'message' => __('Can\'t Delete This One')]);
+            }
+            $language->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => __('Language deleted successfully!')
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => 'error',
+                'message' => __('Failed to delete language!')
+            ]);
+        }
     }
 }

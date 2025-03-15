@@ -38,7 +38,8 @@
                             <select name="show_at_nav" class="form-control">
                                 <option {{ $category->show_at_nav === 1 ? 'selected' : '' }} value="1">
                                     {{ __('Yes') }}</option>
-                                <option {{ $category->show_at_nav === 0 ? 'selected' : '' }}value="0">{{ __('No') }}
+                                <option {{ $category->show_at_nav === 0 ? 'selected' : '' }} value="0">
+                                    {{ __('No') }}
                                 </option>
                             </select>
                         </div>
